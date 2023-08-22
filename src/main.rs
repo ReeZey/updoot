@@ -40,7 +40,7 @@ async fn handle_connection(mut stream: TcpStream, config: Config) {
 
     let inital = String::from_utf8(inital).unwrap();
     let (method, right) = inital.split_once(" ").unwrap();
-    let (_path, _http_type) = right.rsplit_once(" ").unwrap();
+    let (path, _http_type) = right.rsplit_once(" ").unwrap();
 
     if method != "PUT" {
         let response = format_response(b"que?".to_vec(), 405);
@@ -110,12 +110,23 @@ async fn handle_connection(mut stream: TcpStream, config: Config) {
     };
 
     println!("-- NEW UPLOAD --");
+    println!("Size: {} bytes", content_length);
     println!("Input File: {}.{}", filename, mime);
     println!("Name: {}", filename);
     println!("Type: {}", mime);
-    println!("Size: {} bytes", content_length);
+    println!("Path: {}", path);
 
-    let save_path = config.get_string("save-path").expect("save-path not set");
+    let save_path = match path {
+        "/image" => {
+            config.get_string("image-path").expect("image-path not set")
+        },
+        "/file" => {
+            config.get_string("file-path").expect("file-path not set")
+        },
+        _ => {
+            config.get_string("other-path").expect("other-path not set")
+        }
+    };
 
     let path: PathBuf;
     let mut randomness: String;

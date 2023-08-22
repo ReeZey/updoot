@@ -4,8 +4,10 @@ server-port = 9000
 # key
 secret-key = "hemligt"
 
-# save location
-save-path = "output"
+# save locations
+image-path = "output"
+file-path = "output"
+other-path = "output"
 
 # internal buffer used for reading
 buffer-size = 65535
