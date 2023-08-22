@@ -126,10 +126,10 @@ async fn handle_connection(mut stream: TcpStream, config: Config) {
             .map(char::from)
             .collect::<String>();
 
-        let try_path = Path::new(&format!("{}/{}-{}.{}", save_path, filename, randomness, mime)).to_owned();
+        let try_path = Path::new(&format!("{}/{}-{}.{}", save_path, randomness, filename, mime)).to_owned();
         if !try_path.exists() {
             path = try_path;
-            filename = format!("{}-{}", filename, randomness);
+            filename = format!("{}-{}", randomness, filename);
             break;
         }
     }
