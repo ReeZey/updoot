@@ -87,6 +87,18 @@ async fn handle_connection(mut stream: TcpStream, config: Config) {
     }
     let mut content_length = usize::from_str_radix(content_length.unwrap(), 10).unwrap();
 
+    let mut filename: String = match headers.get("file") {
+        Some(name) => {
+            let file = name.rsplit_once(".");
+            if file.is_some() {
+                file.unwrap().0.to_owned()
+            } else {
+                name.to_owned()
+            }
+        },
+        None => "unknown".to_owned()
+    };
+
     let mime = match headers.get("content-type") {
         Some(mime) => {
             match mime2ext(mime) {
@@ -98,26 +110,26 @@ async fn handle_connection(mut stream: TcpStream, config: Config) {
     };
 
     println!("-- NEW UPLOAD --");
+    println!("Input File: {}.{}", filename, mime);
+    println!("Name: {}", filename);
     println!("Type: {}", mime);
     println!("Size: {} bytes", content_length);
 
     let save_path = config.get_string("save-path").expect("save-path not set");
 
     let path: PathBuf;
-    let filename: String;
+    let mut randomness: String;
     loop {
-        let mut try_string: String = rand::thread_rng()
+        randomness = rand::thread_rng()
             .sample_iter(&Alphanumeric)
-            .take(32)
+            .take(8)
             .map(char::from)
-            .collect();
+            .collect::<String>();
 
-        try_string = try_string.to_lowercase();
-
-        let try_path = Path::new(&format!("{}/{}.{}", save_path, try_string, mime)).to_owned();
+        let try_path = Path::new(&format!("{}/{}-{}.{}", save_path, filename, randomness, mime)).to_owned();
         if !try_path.exists() {
             path = try_path;
-            filename = try_string;
+            filename = format!("{}-{}", filename, randomness);
             break;
         }
     }
