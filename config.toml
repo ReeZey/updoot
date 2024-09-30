@@ -1,0 +1,10 @@
+secret_key = "hejsan"
+port = 9000
+
+[type.image]
+path = "temp/images"
+limit = "1G"
+
+[type.file]
+path = "temp"
+limit = "10G"
