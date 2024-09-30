@@ -61,7 +61,6 @@ async fn main() {
             }
         };
 
-
         let options = types.get(file_type).unwrap().clone().into_table().unwrap();
         let upload_limit = Byte::parse_str(options.get("limit").unwrap().clone().into_string().unwrap(), true).unwrap().as_u64() as usize;
 
