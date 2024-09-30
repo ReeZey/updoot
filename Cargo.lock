@@ -422,8 +422,8 @@ dependencies = [
 
 [[package]]
 name = "mws"
-version = "0.2.0"
-source = "git+https://github.com/reezey/mws/#1da59e3c70dd8cf8c30d74d76b1bcd1347201c50"
+version = "0.2.1"
+source = "git+https://github.com/reezey/mws/#36f53452bf4c48eab5d6e763b56dcadf422f74cf"
 dependencies = [
  "tokio",
 ]
