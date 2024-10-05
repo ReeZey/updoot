@@ -1,4 +1,4 @@
-use std::{fs::{self, File}, io::{self, Write}, panic, path::PathBuf};
+use std::{fs::{self, File}, io::Write, path::PathBuf};
 use byte_unit::{Byte, UnitType};
 use config::{Config, FileFormat};
 use mws::{html::Status, utils::{format_response, format_response_with_body}, WebServer};
@@ -18,6 +18,8 @@ const UPDOOT_LOG: &str = "[UPDOOT]";
 
 #[tokio::main]
 async fn main() {
+    println!("{UPDOOT_LOG} starting updoot server");
+
     let config = CONFIG.lock().await;
     let port = config.get_int("port").expect("port variable is missing") as u16;
     let verbose = config.get_bool("verbose").expect("verbose variable is missing");
@@ -84,7 +86,7 @@ async fn main() {
             server_key = key.to_string();
         }
 
-        if *key != server_key {
+        if server_key != "" && *key != server_key {
             request.stream.write_all(&format_response(Status::Unauthorized)).await.unwrap();
             return;
         }

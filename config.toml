@@ -1,6 +1,6 @@
 port = 9000
 verbose = false
-secret_key = "secret"
+#secret_key = "secret"
 
 [type.image]
 path = "temp/images"
