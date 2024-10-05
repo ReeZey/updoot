@@ -1,5 +1,6 @@
-secret_key = "hejsan"
 port = 9000
+verbose = false
+secret_key = "secret"
 
 [type.image]
 path = "temp/images"
@@ -8,3 +9,4 @@ limit = "1G"
 [type.file]
 path = "temp"
 limit = "10G"
+secret_key = "file_specific_secret"
