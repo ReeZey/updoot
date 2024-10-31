@@ -57,8 +57,8 @@ async fn main() {
             }
         };
 
-        let file_name = match request.headers.get("file") {
-            Some(file) => file,
+        let mut file_name = match request.headers.get("file") {
+            Some(file) => file.clone(),
             None => {
                 request.stream.write_all(&format_response(Status::BadRequest)).await.unwrap();
                 return;
@@ -114,10 +114,12 @@ async fn main() {
                 .map(char::from)
                 .collect();
 
-            let file_name = file_path.file_stem().unwrap_or_default().to_str().unwrap();
+            let file_stem = file_path.file_stem().unwrap_or_default().to_str().unwrap();
             let ext = file_path.extension().unwrap_or_default().to_str().unwrap();
 
-            let file = format!("{}/{}_{}.{}", folder_path, file_name, rand_string, ext);
+            file_name = format!("{}_{}.{}", file_stem, rand_string, ext);
+
+            let file = format!("{}/{}", folder_path, file_name);
             file_path = PathBuf::from(file)
         }
         let mut file = File::create(file_path).unwrap();
@@ -135,7 +137,7 @@ async fn main() {
         
         println!("{UPDOOT_LOG} {:?} just uploaded {:?} [{:.2}]", request.get_real_ip(None), file_name, convenient_byte);
 
-        let text = urlencoding::encode(file_name).to_string();
+        let text = urlencoding::encode(&file_name).to_string();
         request.stream.write_all(&format_response_with_body(Status::OK, text)).await.unwrap();
     }).await;
 }
